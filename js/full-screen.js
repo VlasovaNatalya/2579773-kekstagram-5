@@ -48,14 +48,26 @@ function showComments (post) {
     return;
   }
 
-  const moreComments = Math.min(currentComments + 5, post.comment.length);
-  for (let i = currentComments; i < moreComments; i++) {
+  const visibleComments = Math.min(currentComments + 5, 5);
+  for (let i = currentComments; i < visibleComments; i++) {
     createComment(post.comment[i]);
   }
 
-  currentComments = moreComments;
+  currentComments = visibleComments;
   socialCommentCount.textContent = `${currentComments} из ${post.comment.length} комментариев`;
 
+  function addMoreComments () {
+    const moreComments = Math.min(currentComments + 5, post.comment.length);
+    for (let i = currentComments; i < moreComments; i++) {
+      createComment(post.comment[i]);
+    }
+
+    currentComments = moreComments;
+    socialCommentCount.textContent = `${currentComments} из ${post.comment.length} комментариев`;
+    showCommentsLoader(currentComments, post);
+  }
+
+  commentsLoader.onclick = () => addMoreComments(post);
   showCommentsLoader(currentComments, post);
 }
 
@@ -69,7 +81,6 @@ function openFullPicture (post){
 
   currentComments = 0;
   showComments(post);
-  commentsLoader.onclick = () => showComments(post);
 
   document.body.classList.add('modal-open');
 
